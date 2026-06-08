@@ -1,0 +1,4 @@
+/weft-app-windows.exe
+/weft-app-windows
+*.msix
+dist/

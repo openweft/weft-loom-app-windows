@@ -1,0 +1,37 @@
+version: '3'
+
+# weft-loom-app-windows is a cgo app: the WebView is WebView2 (via webview_go;
+# requires the Evergreen WebView2 runtime, preinstalled on Windows 11),
+# the tray is a notification-area icon (via fyne.io/systray). Build with
+# a gcc toolchain (e.g. mingw-w64 / TDM-GCC) on the PATH. The shared,
+# non-UI logic lives in ../weft-app-core and is tested there.
+
+tasks:
+  deps:
+    desc: Fetch Go module dependencies (needs network)
+    cmds:
+      - go mod download
+
+  build:
+    desc: Build the weft-loom-app-windows binary (cgo, GUI subsystem)
+    cmds:
+      - cmd: set CGO_ENABLED=1&& go build -ldflags "-H windowsgui -X main.version={{.VERSION}} -X main.commit={{.COMMIT}} -X main.date={{.DATE}}" -o weft-loom-app-windows.exe .
+        platforms: [windows]
+    vars:
+      VERSION:
+        sh: git describe --tags --always --dirty 2>/dev/null || echo dev
+      COMMIT:
+        sh: git rev-parse --short HEAD 2>/dev/null || echo none
+      DATE:
+        sh: date -u +%Y-%m-%dT%H:%M:%SZ
+
+  fmt:
+    desc: gofmt check
+    cmds:
+      - test -z "$(gofmt -l .)" || (gofmt -l . && exit 1)
+
+  msix:
+    desc: Package as an MSIX (needs Windows SDK makeappx; signing in CI)
+    cmds:
+      - cmd: pwsh -File packaging/package.ps1
+        platforms: [windows]

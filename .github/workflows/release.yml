@@ -1,0 +1,63 @@
+name: Release
+
+# Tag-driven packaging. An MSIX is built and attached to the GitHub
+# Release ONLY on a vX.Y.Z tag — never on push to main (see the project
+# memory entry "No autopublish during dev").
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Git ref to build from'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  msix:
+    name: MSIX (Windows)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+          fetch-depth: 0
+
+      - name: Checkout weft-app-core
+        uses: actions/checkout@v4
+        with:
+          repository: openweft/weft-app-core
+          path: ../weft-app-core
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.x'
+          cache: true
+
+      - name: Package MSIX
+        shell: pwsh
+        run: pwsh -File packaging/package.ps1 -OutDir dist
+
+      # Signing runs only when the cert secret is present.
+      - name: Sign MSIX
+        if: ${{ secrets.WINDOWS_CERT_PFX != '' }}
+        shell: pwsh
+        env:
+          WINDOWS_CERT_PFX: ${{ secrets.WINDOWS_CERT_PFX }}
+          WINDOWS_CERT_PASSWORD: ${{ secrets.WINDOWS_CERT_PASSWORD }}
+        run: |
+          Write-Host "TODO - decode WINDOWS_CERT_PFX and run: signtool sign /fd SHA256 dist\WeftApp.msix"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: weft-loom-app-windows
+          path: dist/WeftApp.msix
+
+      - name: Attach to release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/WeftApp.msix

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- MSIX package manifest for weft-app-windows.
+     Logos referenced under Images\ must be real PNGs of the listed sizes
+     (generate from assets/icon.png — see packaging/package.ps1). The
+     Publisher CN must match the signing certificate's subject. -->
+<Package
+    xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+    xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+    xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities">
+
+  <Identity
+      Name="OpenWeft.WeftApp"
+      Publisher="CN=OpenWeft"
+      Version="0.1.0.0"
+      ProcessorArchitecture="x64" />
+
+  <Properties>
+    <DisplayName>Weft</DisplayName>
+    <PublisherDisplayName>OpenWeft</PublisherDisplayName>
+    <Logo>Images\StoreLogo.png</Logo>
+    <Description>Tray client for the Weft cloud dashboard.</Description>
+  </Properties>
+
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.17763.0" MaxVersionTested="10.0.22621.0" />
+  </Dependencies>
+
+  <Resources>
+    <Resource Language="en-us" />
+  </Resources>
+
+  <Applications>
+    <Application Id="WeftApp" Executable="weft-app-windows.exe" EntryPoint="Windows.FullTrustApplication">
+      <uap:VisualElements
+          DisplayName="Weft"
+          Description="Tray client for the Weft cloud dashboard."
+          BackgroundColor="transparent"
+          Square150x150Logo="Images\Square150x150Logo.png"
+          Square44x44Logo="Images\Square44x44Logo.png">
+        <uap:DefaultTile Wide310x150Logo="Images\Wide310x150Logo.png" />
+      </uap:VisualElements>
+    </Application>
+  </Applications>
+
+  <Capabilities>
+    <!-- Reach the cluster over SSH / WireGuard. FullTrust because the app
+         is a packaged desktop binary (WebView2 + tray), not a UWP app. -->
+    <Capability Name="internetClient" />
+    <Capability Name="privateNetworkClientServer" />
+    <rescap:Capability Name="runFullTrust" />
+  </Capabilities>
+</Package>
