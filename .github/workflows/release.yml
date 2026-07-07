@@ -21,18 +21,11 @@ jobs:
     name: MSIX (Windows)
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: ${{ inputs.ref || github.ref }}
           fetch-depth: 0
-
-      - name: Checkout weft-app-core
-        uses: actions/checkout@v4
-        with:
-          repository: openweft/weft-app-core
-          path: ../weft-app-core
-
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v6
         with:
           go-version: '1.26.x'
           cache: true
@@ -51,7 +44,7 @@ jobs:
         run: |
           Write-Host "TODO - decode WINDOWS_CERT_PFX and run: signtool sign /fd SHA256 dist\WeftApp.msix"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: weft-loom-app-windows
           path: dist/WeftApp.msix
