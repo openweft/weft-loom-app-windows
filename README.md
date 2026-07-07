@@ -1,3 +1,5 @@
+<p align="center"><img src="https://raw.githubusercontent.com/openweft/brand/main/social/weft-loom-app-windows.png" alt="weft-loom-app-windows" width="720"></p>
+
 # weft-loom-app-windows
 
 Windows notification-area client for the
