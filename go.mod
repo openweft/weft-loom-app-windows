@@ -1,12 +1,13 @@
 module github.com/openweft/weft-loom-app-windows
 
-go 1.26
+go 1.26.4
 
 require (
 	fyne.io/systray v1.11.0
+	github.com/go-mswin/winrt v0.1.0
 	github.com/openweft/weft-app-core v0.0.0-20260607093739-70e9dcfc325b
 	github.com/webview/webview_go v0.0.0-20240831120633-6173450d4dd6
-	golang.org/x/sys v0.45.0
+	golang.org/x/sys v0.47.0
 	golang.org/x/term v0.43.0
 	golang.zx2c4.com/wireguard v0.0.0-20260522210424-ecfc5a8d5446
 )
@@ -17,8 +18,10 @@ require (
 exclude golang.zx2c4.com/wireguard/tun/netstack v0.0.0-20220703234212-c31a7b1ab478
 
 require (
+	github.com/go-ole/go-ole v1.3.0 // indirect
 	github.com/godbus/dbus/v5 v5.1.0 // indirect
 	github.com/google/btree v1.1.2 // indirect
+	github.com/saltosystems/winrt-go v0.0.0-20260513072510-45f10383b2b8 // indirect
 	golang.org/x/crypto v0.52.0 // indirect
 	golang.org/x/net v0.54.0 // indirect
 	golang.org/x/time v0.7.0 // indirect
