@@ -20,6 +20,12 @@ jobs:
   msix:
     name: MSIX (Windows)
     runs-on: windows-latest
+    # The secrets context is not available in a step `if`, so surface the
+    # signing secrets as job-level env and test those instead. Without this
+    # the workflow does not parse at all, and never runs.
+    env:
+      WINDOWS_CERT_PASSWORD: ${{ secrets.WINDOWS_CERT_PASSWORD }}
+      WINDOWS_CERT_PFX: ${{ secrets.WINDOWS_CERT_PFX }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -36,7 +42,7 @@ jobs:
 
       # Signing runs only when the cert secret is present.
       - name: Sign MSIX
-        if: ${{ secrets.WINDOWS_CERT_PFX != '' }}
+        if: env.WINDOWS_CERT_PFX != ''
         shell: pwsh
         env:
           WINDOWS_CERT_PFX: ${{ secrets.WINDOWS_CERT_PFX }}
