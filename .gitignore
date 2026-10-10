@@ -2,3 +2,4 @@
 /weft-app-windows
 *.msix
 dist/
+/weft-loom-app-windows
